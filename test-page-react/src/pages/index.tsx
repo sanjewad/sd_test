@@ -10,6 +10,7 @@ useEffect(() => {
     const response = await fetch('/api/load/products')
     const data = await response?.json()
     setProduct(data)
+    console.log(product)
     }catch(e){
       console.log(">>>>"+ e)
     }
@@ -21,7 +22,6 @@ useEffect(() => {
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <div>
             This is page from Sanj
-          {product}
         </div>
       </main>
       <footer/>
