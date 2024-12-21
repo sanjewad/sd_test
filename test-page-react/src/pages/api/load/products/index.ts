@@ -37,7 +37,7 @@ export default async function handler(
         const responseData = await response.json();
         res.status(200).json({ message: 'External API response received', data: responseData });
       } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch from external API' });
+        console.error('Error fetching data from external API:', error);
       }
     } else {
       res.status(405).json({ error: 'Method Not Allowed' });

@@ -11,7 +11,7 @@ services:
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres" ]
   api:
-    build: ./sd_aus_cart
+    build: ./test
     ports:
       - "8080:8080"
     depends_on:
@@ -23,8 +23,8 @@ services:
       DATASOURCE_PASSWORD: postgres
       FRONTEND_URL: localhost
   front-end:
-      build: ./spice_cart
-      container_name: spice-cart
+      build: ./test-page-react
+      container_name: test-page-react
       ports:
         - "80:80"
       environment:

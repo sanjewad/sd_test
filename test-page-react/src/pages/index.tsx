@@ -1,9 +1,4 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
 import { useEffect, useState } from "react";
-import { getProducts } from "@/server/servercall";
-import handler from "./api/hello";
-
 
 export default function Home() {
 
