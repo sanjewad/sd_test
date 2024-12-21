@@ -1,0 +1,69 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cartdb
+    volumes:
+      - database:/var/lib/postgresql/data/
+    ports:
+      - "5431:5432"
+    networks:
+      - db-network
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+  api:
+    build: ./sd_aus_cart
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - db-network
+    restart: on-failure
+    environment:
+      DATASOURCE_URL: 'jdbc:postgresql://db:5432/cartdb'
+      DATASOURCE_USER: postgres
+      DATASOURCE_PASSWORD: postgres
+      FRONTEND_URL: localhost
+  front-end:
+      build: ./spice_cart
+      container_name: spice-cart
+      ports:
+        - "80:80"
+        - "443:443"
+      volumes:
+        - web-root:/var/www/html
+        - ./nginx-conf:/etc/nginx/conf.d
+        - certbot-etc:/etc/letsencrypt
+        - certbot-var:/var/lib/letsencrypt
+      networks:
+        - db-network
+  certbot:
+      image: certbot/certbot:latest
+      volumes:
+        - certbot-etc:/etc/letsencrypt
+        - certbot-var:/var/lib/letsencrypt
+        - web-root:/var/www/html
+      depends_on:
+          - front-end
+      command:
+        - certonly --webroot --webroot-path=/var/www/html --email sanjewad@gmail.com --agree-tos --no-eff-email --staging -d ceylonspicehub.com.au  -d www.ceylonspicehub.com.au
+        - renew
+        -
+volumes:
+  database:
+  certbot-etc:
+  certbot-var:
+  web-root:
+      driver: local
+      driver_opts:
+        type: none
+        ##device: /home/sammy/node_project/views/
+        o: bind
+
+networks:
+  db-network:
+      driver: bridge

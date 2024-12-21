@@ -1,0 +1,3 @@
+[submodule "test-page-react"]
+	path = test-page-react
+	url = ./test-page-react
