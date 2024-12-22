@@ -30,15 +30,14 @@ services:
       environment:
         NEXT_PUBLIC_API_URL: http://localhost:8080
   certbot:
-      image: certbot/certbot:latest
-      volumes:
-        - certbot-etc:/etc/letsencrypt
-        - certbot-var:/var/lib/letsencrypt
-        - web-root:/var/www/html
-      depends_on:
+    image: certbot/certbot:latest
+    volumes:
+        - ./certbot/www/:/var/www/certbot/:rw
+        - ./certbot/conf/:/etc/letsencrypt/:rw
+    depends_on:
           - front-end
-      command:
-        - certonly --webroot --webroot-path=/var/www/html --email sanjewad@gmail.com --agree-tos --no-eff-email --staging -d ceylonspicehub.com.au  -d www.ceylonspicehub.com.au
+    command:
+        - certonly --webroot --webroot-path=/var/www/certbot --email sanjewad@gmail.com --agree-tos --no-eff-email --staging -d ceylonspicehub.com.au  -d www.ceylonspicehub.com.au
 volumes:
   certbot-etc:
   certbot-var:
