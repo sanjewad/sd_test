@@ -26,24 +26,13 @@ services:
       build: ./test-page-react
       container_name: test-page-react
       ports:
-        - "80:80"
-      environment:
-        NEXT_PUBLIC_API_URL: http://localhost:8080
+        - 80:80
+        - 443:443
+      volumes:
+          - ./volume/nginx/conf/:/etc/nginx/conf.d/:ro
+          - ./volume/certbot/www/:/var/www/certbot/:ro
   certbot:
-    image: certbot/certbot:latest
-    volumes:
-        - ./certbot/www/:/var/www/certbot/:rw
-        - ./certbot/conf/:/etc/letsencrypt/:rw
-    depends_on:
-          - front-end
-    command:
-        - certonly --webroot --webroot-path=/var/www/certbot --email sanjewad@gmail.com --agree-tos --no-eff-email --staging -d ceylonspicehub.com.au  -d www.ceylonspicehub.com.au
-volumes:
-  certbot-etc:
-  certbot-var:
-  web-root:
-      driver: local
-      driver_opts:
-        type: none
-        ##device: /home/sammy/node_project/views/
-        o: bind
+        image: certbot/certbot
+        volumes:
+            - ./volume/certbot/www/:/var/www/certbot/:rw
+            - ./volume/certbot/conf/:/etc/letsencrypt/:rw
