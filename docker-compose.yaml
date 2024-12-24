@@ -1,38 +1,10 @@
 services:
-  db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: cartdb
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "postgres" ]
   api:
     build: ./test
     ports:
-      - "8080:8080"
-    depends_on:
-      - db
-    restart: on-failure
-    environment:
-      DATASOURCE_URL: 'jdbc:postgresql://db:5432/cartdb'
-      DATASOURCE_USER: postgres
-      DATASOURCE_PASSWORD: postgres
-      FRONTEND_URL: localhost
+      - 8080:8080
   front-end:
       build: ./test-page-react
       container_name: test-page-react
       ports:
         - 80:80
-        - 443:443
-      volumes:
-          - ./volume/nginx/conf/:/etc/nginx/conf.d/:ro
-          - ./volume/certbot/www/:/var/www/certbot/:ro
-  certbot:
-        image: certbot/certbot
-        volumes:
-            - ./volume/certbot/www/:/var/www/certbot/:rw
-            - ./volume/certbot/conf/:/etc/letsencrypt/:rw
